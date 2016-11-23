@@ -8,14 +8,32 @@ import { NOTE_NAMES, nameToNote } from "./noteName"
 
 var synth = new Synth("http://www.g200kg.com/webmidilink/gmplayer/")
 
-function playNotes(notes) {
-  notes.forEach(note => {
-    const n = note + 48
-    synth.noteOn(n, 100)
-    setTimeout(() => {
-      synth.noteOff(n)
-    }, 500)
-  })
+function playNotes(notes, duration = 500, delay = 0, channel = 0, callback = () => {}) {
+  let canceled = false
+  let noteOffId
+  const id = setTimeout(() => {
+    if (canceled) {
+      return
+    }
+    notes.forEach(note => {
+      const n = note + 48
+      synth.noteOn(n, 100, channel)
+      noteOffId = setTimeout(() => {
+        if (canceled) {
+          return
+        }
+        synth.noteOff(n, channel)
+      }, duration)
+    })
+    callback()
+  }, delay)
+
+  return () => {
+    clearTimeout(id)
+    if (noteOffId) {
+      clearTimeout(id)
+    }
+  }
 }
 
 // transpose: 4 = 6th string starts from E
@@ -35,6 +53,20 @@ const TUNINGS = {
   "-4": 0
 }
 
+class Sequencer {
+  constructor() {
+    this.cancel = () => {}
+  }
+
+  // [{notes: Array, time: Number, duration: Number}]
+  play(seq) {
+    const cancels = seq.map(s => playNotes(s.notes, s.duration, s.time, s.channel))
+    this.cancel = () => cancels.map(c => c())
+  }
+}
+
+const sequencer = new Sequencer
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -43,7 +75,8 @@ class App extends Component {
       transpose: 4,
       drop: false,
       key: 0,
-      selectedDegree: 0
+      selectedDegree: 0,
+      pattern: [1, 5, 1, 5, 2, 4, 1, 5]
     }
   }
 
@@ -84,6 +117,60 @@ class App extends Component {
       })
 
       playNotes(notes)
+    }
+
+    const onClickPlay = () => {
+      sequencer.cancel()
+
+      const { pattern } = this.state
+
+      function loop(arr) {
+        const result = []
+        for (let s of arr) {
+          for (let i = 0; i < 4; i++) {
+            result.push(s)
+          }
+        }
+        return result
+      }
+
+      function repeat(arr, i) {
+        let result = []
+        for (let n = 0; n < i; n++) {
+          result = result.concat(arr)
+        }
+        return result
+      }
+
+      const beat = 500 // milliseconds per beat
+
+      const seq = loop(pattern)
+        .map((degree, i) => ({
+          notes: chords[degree],
+          time: beat * i,
+          duration: beat - 10,
+          channel: 0
+        }))
+
+      const drumSeq = repeat([[0, 6], [6], [2, 6], [6], [0, 6], [0, 6], [2, 6], [6]], seq.length / 4)
+        .map((notes, i) => ({
+          notes: notes.map(n => n - 12),
+          time: beat / 2 * i,
+          duration: beat / 2 - 1,
+          channel: 9
+        }))
+
+      sequencer.play(seq.concat(drumSeq))
+    }
+
+    const onClickStop = () => {
+      sequencer.cancel()
+    }
+
+    const onChangePattern = e => {
+      this.setState({
+        pattern: e.target.value.split(",")
+      })
     }
 
     return (
@@ -137,6 +224,11 @@ class App extends Component {
               </div>
             })}
             </div>
+        </div>
+        <div className="player">
+          <input type="text" value={this.state.pattern.join(",")} onChange={onChangePattern} />
+          <button onClick={onClickPlay}>play</button>
+          <button onClick={onClickStop}>stop</button>
         </div>
       </div>
     )

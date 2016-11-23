@@ -5,7 +5,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: Arial;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .Guitar {
@@ -58,7 +58,7 @@ body {
 }
 
 .mark.note-2 .background {
-  background: rgba(0, 255, 233, 0.25);
+  background: rgba(0, 255, 233, 1);
 }
 
 .mark.note-3 .background {
@@ -66,19 +66,19 @@ body {
 }
 
 .mark.note-4 .background {
-  background: rgba(38, 255, 14, 0.2);
+  background: rgba(38, 255, 14, 1);
 }
 
 .mark.note-5 .background {
-  background: rgba(255, 0, 0, 0.13);
+  background: rgb(255, 165, 0);
 }
 
 .mark.note-6 .background {
-  background: rgba(182, 0, 255, 0.19);
+  background: rgba(182, 0, 255, 1);
 }
 
 .mark.note-7 .background {
-  background: rgba(0, 0, 255, 0.14);
+  background: rgba(0, 165, 255, 1);
 }
 
 .mark .background {
@@ -91,11 +91,11 @@ body {
   width: var(--mark-size);
   height: var(--mark-size);
   box-sizing: border-box;
+  opacity: 0.1;
 }
 
 .mark .background.chord {
-  border-radius: 0;
-  border: 2px solid rgba(4, 4, 4, 0.23);
+  opacity: 1;
 }
 
 .Fret:nth-child(4),
@@ -182,7 +182,6 @@ body {
   width: 7em;
   display: inline-block;
   font-size: 80%;
-  font-family: Arial;
 }
 
 .chords {
@@ -203,6 +202,10 @@ body {
 
 .chords .chord.selected {
   border: 2px solid rgba(0, 0, 0, 0.43);
+}
+
+.chord .name {
+  font-weight: 800;
 }
 
 .chord .degree-name {

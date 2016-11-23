@@ -6,7 +6,7 @@ function Fret(props) {
   const { degree, isChordTone, note, playNotes } = props
   return <div
     className="Fret"
-    onClick={() => playNotes([note])}>
+    onClick={() => playNotes([note - 12])}>
     {degree &&
       <Mark degree={degree} isChordTone={isChordTone} />}
   </div>
