@@ -53,34 +53,6 @@ body {
   position: relative;
 }
 
-.mark.note-1 .background {
-  background: red;
-}
-
-.mark.note-2 .background {
-  background: rgba(0, 255, 233, 1);
-}
-
-.mark.note-3 .background {
-  background: blue;
-}
-
-.mark.note-4 .background {
-  background: rgba(38, 255, 14, 1);
-}
-
-.mark.note-5 .background {
-  background: rgb(255, 165, 0);
-}
-
-.mark.note-6 .background {
-  background: rgba(182, 0, 255, 1);
-}
-
-.mark.note-7 .background {
-  background: rgba(0, 165, 255, 1);
-}
-
 .mark .background {
   position: absolute;
   left: calc(50% - var(--mark-size) / 2);

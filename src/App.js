@@ -68,7 +68,7 @@ class Sequencer {
   }
 }
 
-const sequencer = new Sequencer
+const sequencer = new Sequencer()
 
 class App extends Component {
   constructor(props) {
@@ -238,7 +238,7 @@ class App extends Component {
                 <div className="title">{degree.title}</div>
                 <div className="degree-name">{degree.name}</div>
                 <div className="name">{name}</div>
-                <div className="degrees">{degrees.map(d => d + 1).join(",")}</div>
+                <div className="degrees">{degrees.map(d => (d % scale.length) + 1).join(",")}</div>
               </div>
             })}
             </div>

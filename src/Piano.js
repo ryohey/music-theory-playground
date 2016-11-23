@@ -16,7 +16,7 @@ function Key(props) {
   return <div
     className={`Key ${isNoteBlack(note) ? "black" : "white"} ${isKeyBordered(note) ? "bordered" : ""}`}
     onClick={() => playNotes([note])}>
-    <Mark degree={degree} isChordTone={isChordTone} />
+    <Mark degree={degree} isChordTone={isChordTone} note={note} />
   </div>
 }
 
