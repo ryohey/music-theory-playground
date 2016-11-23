@@ -5,6 +5,7 @@ import Piano from "./Piano"
 import Synth from "./Synth"
 import { SCALES, createScale, DEGREES, createChord, chordDegrees, chordName, offsetNotes, normalizeNotes } from "./music"
 import { NOTE_NAMES, nameToNote } from "./noteName"
+import { notesToColor } from "./color"
 
 var synth = new Synth("http://www.g200kg.com/webmidilink/gmplayer/")
 
@@ -234,7 +235,7 @@ class App extends Component {
               const notes = chords[i]
               const name = chordName(notes)
               const selected = i === this.state.selectedDegree
-              return <div className={`chord ${selected ? "selected" : ""}`} onClick={() => onClickDegree(i, notes)}>
+              return <div className={`chord ${selected ? "selected" : ""}`} onClick={() => onClickDegree(i, notes)} style={{backgroundColor: notesToColor(notes)}}>
                 <div className="title">{degree.title}</div>
                 <div className="degree-name">{degree.name}</div>
                 <div className="name">{name}</div>

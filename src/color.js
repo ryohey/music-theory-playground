@@ -30,8 +30,15 @@ const HARMONY = [0, 7, 5, 9, 4, 3, 8, 2, 11, 10, 1, 6]
 
 // hue: 0 -> 360
 export function notesToColor(notes) {
-  const note = notes[0]
-  const hue = HARMONY.indexOf(note % 12) / 12 * 360
-  const color = Color({h: hue, s: 100, l: 50})
-  return color.rgbString()
+  let result
+  notes.forEach(note => {
+    const hue = HARMONY.indexOf(note % 12) / 12 * 360
+    const color = Color({h: hue, s: 100, l: 50})
+    if (!result) {
+      result = color
+    } else {
+      result = result.mix(color)
+    }
+  })
+  return result.rgbString()
 }

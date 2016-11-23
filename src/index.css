@@ -165,7 +165,8 @@ body {
 }
 
 .chords .chord {
-  width: 6em;
+  width: 6.5em;
+  height: 6.5em;
   float: left;
   margin-right: 0.5em;
   border: 1px solid rgba(0, 0, 0, 0.09);
@@ -174,7 +175,7 @@ body {
 }
 
 .chords .chord.selected {
-  border: 2px solid rgba(0, 0, 0, 0.43);
+  border: 3px solid rgba(255, 255, 255, 0.5);
 }
 
 .chord .name {
