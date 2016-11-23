@@ -1,6 +1,6 @@
 import React from "react"
 import Mark from "./Mark"
-import { checkChord } from "./music"
+import { getDegree } from "./music"
 
 function Fret(props) {
   const { degree, isChordTone, note, playNotes } = props
@@ -20,7 +20,7 @@ export default function Guitar(props) {
     const frets = []
     for (let f = 0; f <= 24; f++) {
       const note = tunings[tunings.length - 1 - s] + f
-      const degree = checkChord(note, scale)
+      const degree = getDegree(note, scale)
       const isChordTone = chordNotes.map(c => c % 12).includes(note % 12)
       frets.push(<Fret
         degree={degree}

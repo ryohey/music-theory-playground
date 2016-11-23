@@ -1,6 +1,6 @@
 import React from "react"
 import Mark from "./Mark"
-import { checkChord } from "./music"
+import { getDegree } from "./music"
 
 function isNoteBlack(note) {
   return [1, 3, 6, 8, 10].includes(note % 12)
@@ -25,7 +25,7 @@ export default function Piano(props) {
   const keys = []
   for (let i = 0; i < 24; i++) {
     const note = i
-    const degree = checkChord(note, scale)
+    const degree = getDegree(note, scale)
     const isChordTone = chordNotes.map(c => c % 12).includes(note % 12)
     keys.push(<Key
       degree={degree}

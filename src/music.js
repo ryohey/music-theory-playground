@@ -1,5 +1,10 @@
 import { noteToName } from "./noteName"
 
+/**
+  スケールを決めると I ～ VII のコードが決まる
+  キーを決めるとコードの具体的な音程が決まる
+*/
+
 Object.map = function(o, f, ctx) {
   ctx = ctx || this;
   var result = {};
@@ -18,9 +23,9 @@ export const SCALES = {
   minorPentatonic: [3, 2, 2, 3, 2],
 }
 
-export function createScale(name, key = 0) {
+export function createScale(name) {
   const steps = SCALES[name]
-  let lastNote = key
+  let lastNote = 0
   return steps.map(step => {
     const note = lastNote % 12
     lastNote += step
@@ -43,7 +48,15 @@ export function createChord(scale, degrees) {
   })
 }
 
-export function checkChord(note, scale) {
+export function normalizeNotes(notes) {
+  return notes.map(s => s % 12)
+}
+
+export function offsetNotes(scale, key) {
+  return scale.map(s => s + key)
+}
+
+export function getDegree(note, scale) {
   const n = note % 12
   for (let key = 0; key < scale.length; key++) {
     if (scale[key] === n) {
@@ -87,7 +100,7 @@ export const DEGREES = [
 export function chordName(notes) {
   const root = notes[0]
   function has(note) {
-    return notes.includes((root + note) % 12)
+    return notes.map(n => n % 12).includes((root + note) % 12)
   }
   const add2 = has(2) // same as add9
   const minor = has(3)

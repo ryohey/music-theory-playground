@@ -3,7 +3,7 @@ import './App.css'
 import Guitar from "./Guitar"
 import Piano from "./Piano"
 import Synth from "./Synth"
-import { SCALES, createScale, DEGREES, createChord, chordDegrees, chordName } from "./music"
+import { SCALES, createScale, DEGREES, createChord, chordDegrees, chordName, offsetNotes, normalizeNotes } from "./music"
 import { NOTE_NAMES, nameToNote } from "./noteName"
 
 var synth = new Synth("http://www.g200kg.com/webmidilink/gmplayer/")
@@ -19,12 +19,12 @@ function playNotes(notes) {
 }
 
 // transpose: 4 = 6th string starts from E
-function createTunings(transpose = 4, drop = false) {
-  let t = [0, 5, 10, 15, 19, 24]
+function createTunings(drop = false) {
   if (drop) {
-    t = [-2, 5, 10, 15, 19, 24]
+    return [-2, 5, 10, 15, 19, 24]
+  } else {
+    return [0, 5, 10, 15, 19, 24]
   }
-  return t.map(n => n + transpose)
 }
 
 const TUNINGS = {
@@ -48,8 +48,11 @@ class App extends Component {
   }
 
   render() {
-    const scale = createScale(this.state.scaleName, this.state.key)
-    const tunings = createTunings(this.state.transpose, this.state.drop)
+    const scale = createScale(this.state.scaleName)
+    const keyedScale = normalizeNotes(offsetNotes(scale, this.state.key))
+    const tunings = offsetNotes(createTunings(this.state.drop), this.state.transpose)
+    const chords = DEGREES.map((_, i) => offsetNotes(createChord(scale, chordDegrees(i)), this.state.key))
+    const chordNotes = chords[this.state.selectedDegree]
 
     const onChangeKey = e => {
       this.setState({
@@ -75,8 +78,6 @@ class App extends Component {
       })
     }
 
-    const chordNotes = createChord(scale, chordDegrees(this.state.selectedDegree))
-
     const onClickDegree = (i, notes) => {
       this.setState({
         selectedDegree: i
@@ -89,11 +90,11 @@ class App extends Component {
       <div className="App">
         <Guitar
           tunings={tunings}
-          scale={scale}
+          scale={keyedScale}
           chordNotes={chordNotes}
           playNotes={playNotes} />
         <Piano
-          scale={scale}
+          scale={keyedScale}
           chordNotes={chordNotes}
           playNotes={playNotes} />
         <div className="settings">
@@ -125,7 +126,7 @@ class App extends Component {
           <div className="chord-list">
             {DEGREES.map((degree, i) => {
               const degrees = chordDegrees(i)
-              const notes = createChord(scale, degrees)
+              const notes = chords[i]
               const name = chordName(notes)
               const selected = i === this.state.selectedDegree
               return <div className={`chord ${selected ? "selected" : ""}`} onClick={() => onClickDegree(i, notes)}>
