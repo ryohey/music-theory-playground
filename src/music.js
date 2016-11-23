@@ -18,9 +18,7 @@ export const SCALES = {
   major: [2, 2, 1, 2, 2, 2, 1],
   minor: [2, 1, 2, 2, 1, 2, 2],
   harmonicMinor: [2, 1, 2, 2, 1, 3, 1],
-  melodicMinor: [2, 1, 2, 2, 2, 2, 1],
-  majorPentatonic: [2, 2, 3, 2, 3],
-  minorPentatonic: [3, 2, 2, 3, 2],
+  melodicMinor: [2, 1, 2, 2, 2, 2, 1]
 }
 
 export function createScale(name) {

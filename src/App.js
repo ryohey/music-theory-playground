@@ -15,6 +15,10 @@ function playNotes(notes, duration = 500, delay = 0, channel = 0, callback = () 
     if (canceled) {
       return
     }
+    callback()
+    if (notes.length === 0) {
+      return
+    }
     notes.forEach(note => {
       const n = note + 48
       synth.noteOn(n, 100, channel)
@@ -25,7 +29,6 @@ function playNotes(notes, duration = 500, delay = 0, channel = 0, callback = () 
         synth.noteOff(n, channel)
       }, duration)
     })
-    callback()
   }, delay)
 
   return () => {
@@ -60,7 +63,7 @@ class Sequencer {
 
   // [{notes: Array, time: Number, duration: Number}]
   play(seq) {
-    const cancels = seq.map(s => playNotes(s.notes, s.duration, s.time, s.channel))
+    const cancels = seq.map(s => playNotes(s.notes, s.duration, s.time, s.channel, s.callback))
     this.cancel = () => cancels.map(c => c())
   }
 }
@@ -76,7 +79,7 @@ class App extends Component {
       drop: false,
       key: 0,
       selectedDegree: 0,
-      pattern: [1, 5, 1, 5, 2, 4, 1, 5]
+      pattern: [1, 2, 3, 4, 5, 6, 7]
     }
   }
 
@@ -146,7 +149,7 @@ class App extends Component {
 
       const seq = loop(pattern)
         .map((degree, i) => ({
-          notes: chords[degree],
+          notes: chords[degree - 1],
           time: beat * i,
           duration: beat - 10,
           channel: 0
@@ -160,7 +163,21 @@ class App extends Component {
           channel: 9
         }))
 
-      sequencer.play(seq.concat(drumSeq))
+      const callbacks = pattern.map((degree, i) => ({
+        notes: [],
+        time: beat * i * 4,
+        callback: () => {
+          this.setState({
+            selectedDegree: degree - 1
+          })
+        }
+      }))
+
+      sequencer.play([]
+        .concat(seq)
+        .concat(drumSeq)
+        .concat(callbacks)
+      )
     }
 
     const onClickStop = () => {
@@ -185,6 +202,7 @@ class App extends Component {
           chordNotes={chordNotes}
           playNotes={playNotes} />
         <div className="settings">
+          <h2>Settings</h2>
           <div className="section">
             <label>Key</label>
             <select value={this.state.key} onChange={onChangeKey}>
@@ -209,7 +227,7 @@ class App extends Component {
           </div>
         </div>
         <div className="chords">
-          <label>Chords</label>
+          <h2>Chords</h2>
           <div className="chord-list">
             {DEGREES.map((degree, i) => {
               const degrees = chordDegrees(i)
@@ -220,12 +238,13 @@ class App extends Component {
                 <div className="title">{degree.title}</div>
                 <div className="degree-name">{degree.name}</div>
                 <div className="name">{name}</div>
-                <div className="degrees">{degrees.join(",")}</div>
+                <div className="degrees">{degrees.map(d => d + 1).join(",")}</div>
               </div>
             })}
             </div>
         </div>
         <div className="player">
+          <h2>Player</h2>
           <input type="text" value={this.state.pattern.join(",")} onChange={onChangePattern} />
           <button onClick={onClickPlay}>play</button>
           <button onClick={onClickStop}>stop</button>

@@ -193,11 +193,12 @@ body {
 }
 
 .chords .chord {
-  width: 5em;
+  width: 6em;
   float: left;
   margin-right: 0.5em;
   border: 1px solid rgba(0, 0, 0, 0.09);
   padding: 0.5em;
+  box-sizing: border-box;
 }
 
 .chords .chord.selected {
@@ -216,4 +217,8 @@ body {
 .chord .degrees {
   font-size: 80%;
   opacity: 0.5;
+}
+
+.player {
+  margin: 2em;
 }
