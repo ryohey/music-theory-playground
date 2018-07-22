@@ -40,5 +40,5 @@ export function notesToColor(notes) {
       result = result.mix(color)
     }
   })
-  return result.rgbString()
+  return result.string()
 }
